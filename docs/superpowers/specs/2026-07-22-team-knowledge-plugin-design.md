@@ -33,10 +33,11 @@ vault는 모든 단계에서 "순수 git repo + 마크다운"이므로, 단계 �
 kc-plugin/
 ├── .claude-plugin/plugin.json    # 플러그인 매니페스트
 ├── skills/
-│   ├── kc-setup/                 # /kc:setup   — 최초 설정 (vault clone, 경로·이름 등록)
-│   ├── kc-log/                   # /kc:log     — 수동 컨텍스트 기록 (인터뷰식)
+│   ├── kc-init/                  # /kc:init    — 머신당 1회 설정 (vault clone, 경로·이름 등록)
+│   ├── kc-commit/                # /kc:commit  — 수동 컨텍스트 기록 (인터뷰식)
+│   ├── kc-status/                # /kc:status  — 대기열·동기화 상태 확인 (읽기 전용)
 │   ├── kc-review/                # /kc:review  — 대기열 초안 검토 → 승인 → vault 반영
-│   ├── kc-sync/                  # /kc:sync    — 읽기 동기화·상태 진단·복구
+│   ├── kc-pull/                  # /kc:pull    — 최신 vault 받아오기·새 컨텍스트 요약·복구
 │   ├── kc-curate/                # /kc:curate  — inbox 처리, 링크·인덱스 정비, 승격
 │   ├── kc-onboard/               # /kc:onboard — 프로젝트 온보딩 브리핑
 │   └── kc-ask/                   # /kc:ask     — vault 질의응답
@@ -46,7 +47,17 @@ kc-plugin/
 └── templates/                    # 컨텍스트 노트·topic 노트·_index 템플릿
 ```
 
-각 팀원 머신에는 `/kc:setup`이 생성하는 로컬 설정 파일(vault 경로, git remote, 작성자 이름, 등록된 프로젝트 목록)만 존재한다. 모든 명령이 이 설정을 읽어 동작한다.
+각 팀원 머신에는 `/kc:init`이 생성하는 로컬 설정 파일(vault 경로, git remote, 작성자 이름, repo→프로젝트 매핑)만 존재한다. 모든 명령이 이 설정을 읽어 동작한다.
+
+### 명령어 명명 원칙
+
+git 용어와 **의미가 실제로 일치할 때만** 빌려온다 (`init`, `commit`, `status`, `pull`). 어긋나는 매핑은 금지 — 예: 기록 명령을 `log`라 부르면 git의 `log`(읽기)와 정반대라 혼란을 만든다. git에 대응 개념이 없는 명령(`curate`, `onboard`, `ask`)은 억지로 git 용어를 쓰지 않는다.
+
+### 셋업은 머신당 1회, 프로젝트 등록은 자동
+
+- `/kc:init`은 **머신당 1회**: vault clone + 로컬 설정 생성. 프로젝트별 셋업은 없다
+- **프로젝트 등록은 온디맨드 자동**: 미등록 repo에서 첫 커밋 트리거 발생 시 Claude가 "이 repo를 vault 프로젝트로 등록할까요?"(슬러그 제안 포함) 확인 → 승인 시 로컬 설정에 repo→슬러그 매핑 추가 + vault에 `projects/<슬러그>/_index.md` 생성
+- 팀원 경험: **init 한 번 하고 나면 평소처럼 일만 한다**
 
 ### ② Vault repo — 팀 공유 지식 저장소
 
@@ -122,7 +133,7 @@ status: approved               # draft | approved
 
 ### ① 주 트리거: 커밋 시점 (개발자)
 
-1. 등록된 프로젝트에서 `git commit` 발생 → `commit-capture.sh` 훅이 Claude에게 "작업 일단락" 신호
+1. `git commit` 발생 → `commit-capture.sh` 훅이 Claude에게 "작업 일단락" 신호 (미등록 repo면 먼저 프로젝트 등록을 제안 — 3장 참조)
 2. Claude가 기록 가치를 판단 (오타 수정 등 사소한 커밋은 제안하지 않음)
 3. 가치가 있으면 그 자리에서 제안: 사고의 흐름 초안 + 배치 제안 제시
 4. 사용자 승인 → 즉시 검토·수정 → vault 반영 (같은 세션 내라 컨텍스트가 가장 신선하고 별도 API 비용 없음)
@@ -133,7 +144,7 @@ status: approved               # draft | approved
 - `session-capture.sh` 훅이 세션 종료 시 실행. 커밋 트리거로 이미 기록된 내용을 제외하고, 기록 안 된 의미 있는 컨텍스트(설계 논의, 조사 등 커밋 없는 작업)가 있으면 **로컬 대기열 파일에 등록만** 한다 — API 호출·vault 쓰기 없음
 - `/kc:review` 실행 시: 대기열 세션들을 읽고 초안 생성 → 사람 검토·수정·승인 → vault 반영. 스킵하면 대기열에서 제거
 
-### ③ 수동 기록: `/kc:log` (Claude Code 밖 작업)
+### ③ 수동 기록: `/kc:commit` (Claude Code 밖 작업)
 
 - PPT·문서 등 외부 도구 작업의 일단락 시점에 작업자가 실행
 - Claude가 인터뷰식으로 질문 (무슨 작업, 어떤 대안, 왜 그 결정, 막힌 점) → 구조화 노트 작성 → 검토 → vault 반영
@@ -151,7 +162,7 @@ status: approved               # draft | approved
 
 ## 6. Git 동기화 (자동)
 
-팀원은 git 명령을 직접 다루지 않는다. vault에 쓰는 모든 명령(`/kc:log`, `/kc:review`, `/kc:curate`)이 자동으로:
+팀원은 git 명령을 직접 다루지 않는다. vault에 쓰는 모든 동작(`/kc:commit`, `/kc:review`, `/kc:curate`, 그리고 커밋 트리거의 즉시 기록)이 자동으로:
 
 1. 쓰기 전 `git pull --rebase`
 2. 노트 생성/수정
@@ -162,7 +173,7 @@ status: approved               # draft | approved
 - **충돌**: 노트는 대부분 "각자 새 파일 추가"라 충돌이 드묾. 같은 파일(예: `_index.md`) 충돌 시 Claude가 병합 시도, 애매하면 사용자에게 확인 — 조용히 한쪽을 버리지 않는다
 - **push 실패** (네트워크 등): 커밋은 로컬에 보존, 다음 kc 명령 실행 시 먼저 push 재시도
 
-`/kc:sync`의 역할: ① 쓰기 없이 최신 상태 받아보기, ② 꼬인 상태(방치된 충돌, 밀린 커밋) 진단·복구. 평상시엔 쓸 일이 없는 것이 정상.
+`/kc:pull`의 역할: ① 쓰기 없이 최신 vault 받아오기 + "새로 올라온 컨텍스트" 요약 브리핑, ② 꼬인 상태(방치된 충돌, 밀린 커밋) 발견 시 진단·복구 제안. `/kc:status`는 같은 정보를 **읽기 전용**으로만 보여준다 (네트워크 접근·변경 없음).
 
 ## 7. 큐레이션 — `/kc:curate`
 
@@ -207,7 +218,7 @@ frontmatter·본문 검색으로 관련 노트를 찾고 링크를 따라가며 
 | git 충돌 | Claude 병합 시도 → 애매하면 사용자 확인 |
 | push 실패 | 로컬 커밋 보존, 다음 명령에서 재시도 |
 | 비밀정보 | 초안 지시에서 제외 + 사람 검토에서 이중 확인 |
-| vault 미설정 | 모든 명령이 감지 → `/kc:setup` 안내 |
+| vault 미설정 | 모든 명령이 감지 → `/kc:init` 안내 |
 | 사소한 커밋 | 기록 제안 자체를 생략 |
 | 기록 거부/스킵 | 대기열에서 제거, 강제하지 않음 |
 
