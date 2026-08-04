@@ -3,6 +3,7 @@ description: "vault 큐레이션 — inbox 정리, 링크·인덱스 정비, top
 ---
 
 vault의 사서 역할. 주 1회 정도 아무나 실행하면 된다. 사용자 대면 텍스트는 한국어.
+환경변수 `KC_DIR`가 설정돼 있으면 아래의 `~/.claude/kc`를 그 경로로 대체한다 (훅과 동일 규칙).
 
 1. `~/.claude/kc/config` 없으면 "/kc:init 먼저" 안내 후 중단. `VAULT_PATH` 읽기,
    `$VAULT_PATH/_meta/conventions.md` 읽기

@@ -2,6 +2,7 @@
 
 vault에 노트를 쓰는 모든 동작은 이 절차를 따른다. 사용자가 git 명령을 직접 다루게 하지 않는다.
 아래에서 `$VAULT_PATH`는 `~/.claude/kc/config`의 값. 순수 git만 사용한다 (gh 금지).
+(환경변수 `KC_DIR`가 설정돼 있으면 config 위치는 `$KC_DIR/config` — 훅과 동일 규칙.)
 
 ## 절차
 

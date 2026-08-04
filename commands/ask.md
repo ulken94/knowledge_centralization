@@ -4,6 +4,7 @@ argument-hint: "<질문>"
 ---
 
 vault 컨텍스트 기반 질의응답. 사용자 대면 텍스트는 한국어.
+환경변수 `KC_DIR`가 설정돼 있으면 아래의 `~/.claude/kc`를 그 경로로 대체한다 (훅과 동일 규칙).
 
 1. `~/.claude/kc/config` 없으면 "/kc:init 먼저" 안내 후 중단. `VAULT_PATH` 읽기.
    `$ARGUMENTS`가 질문이다 — 없으면 물어본다

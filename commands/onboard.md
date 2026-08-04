@@ -4,6 +4,7 @@ argument-hint: "<프로젝트-슬러그>"
 ---
 
 새 팀원(또는 오랜만에 돌아온 팀원)을 위한 프로젝트 브리핑. 사용자 대면 텍스트는 한국어.
+환경변수 `KC_DIR`가 설정돼 있으면 아래의 `~/.claude/kc`를 그 경로로 대체한다 (훅과 동일 규칙).
 
 1. `~/.claude/kc/config` 없으면 "/kc:init 먼저" 안내 후 중단. `VAULT_PATH` 읽기
 2. 먼저 최신화: `git -C "$VAULT_PATH" pull --rebase`

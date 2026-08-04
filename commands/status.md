@@ -4,6 +4,7 @@ description: "kc 대기열·vault 동기화 상태 확인 (읽기 전용)"
 
 **읽기 전용 명령** — 어떤 파일도 수정하지 않고, 네트워크 접근(fetch/pull/push)도 하지 않는다.
 사용자 대면 텍스트는 한국어.
+환경변수 `KC_DIR`가 설정돼 있으면 아래의 `~/.claude/kc`를 그 경로로 대체한다 (훅과 동일 규칙).
 
 1. `~/.claude/kc/config`가 없으면 "/kc:init을 먼저 실행하세요" 안내 후 중단.
    config에서 `VAULT_PATH`를 읽는다
