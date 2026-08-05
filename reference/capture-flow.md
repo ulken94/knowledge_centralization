@@ -14,7 +14,9 @@ commit-capture 훅이 "[kc] git commit 감지" 신호를 줬을 때 따르는 �
 
 - repo 디렉토리명 기반 kebab-case 슬러그를 제안하며 "이 repo를 vault 프로젝트로 등록할까요?" 확인
 - 승인 시:
-  - `printf '%s\t%s\n' "<repo 절대경로>" "<슬러그>" >> ~/.claude/kc/projects.tsv`
+  - repo 절대경로는 심볼릭 링크를 푼 정규 경로(`cd <repo 루트> && pwd -P` 결과)로 쓴다 —
+    훅이 정규화한 경로로 대조하므로 형태가 같아야 매칭된다:
+    `printf '%s\t%s\n' "<정규 절대경로>" "<슬러그>" >> ~/.claude/kc/projects.tsv`
   - `$VAULT_PATH/_meta/templates/project-index.md`를 기반으로 `projects/<슬러그>/_index.md` 생성
     (목적·현재 상태는 사용자에게 한두 문장 묻거나 이 세션의 맥락으로 채운다),
     `projects/<슬러그>/context/` 디렉토리 생성, vault-git-flow.md 절차로 커밋·push

@@ -14,8 +14,18 @@ source "$LIB"
 # 미설정 상태
 if kc_configured; then t "미설정 감지" "no" "yes"; else t "미설정 감지" "no" "no"; fi
 
-printf 'VAULT_PATH=/tmp/v\nAUTHOR=t\n' > "$KC_DIR/config"
+printf 'VAULT_PATH=/tmp/v\nAUTHOR=t\nTOKEN=a=b\n' > "$KC_DIR/config"
 if kc_configured; then t "설정 감지" "yes" "yes"; else t "설정 감지" "yes" "no"; fi
+
+t "config_get: 값 읽기" "/tmp/v" "$(kc_config_get VAULT_PATH)"
+t "config_get: 없는 키 → 빈 값" "" "$(kc_config_get NOPE)"
+t "config_get: 값에 = 포함" "a=b" "$(kc_config_get TOKEN)"
+
+REAL="$(cd "$(mktemp -d)" && pwd -P)"
+ln -s "$REAL" "$KC_DIR/link"
+t "canonical: 실존 경로" "$REAL" "$(kc_canonical "$REAL")"
+t "canonical: 심볼릭 링크 해소" "$REAL" "$(kc_canonical "$KC_DIR/link")"
+t "canonical: 비실존 경로 → 빈 값" "" "$(kc_canonical /no/such/path)"
 
 printf '/Users/a/repo\tmy-proj\n' > "$KC_DIR/projects.tsv"
 t "슬러그: 경로 정확히 일치" "my-proj" "$(kc_project_slug /Users/a/repo)"

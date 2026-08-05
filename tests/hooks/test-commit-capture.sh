@@ -16,19 +16,29 @@ json() { printf '{"cwd":"%s","tool_input":{"command":"%s"}}' "$1" "$2"; }
 
 [ -x "$SCRIPT" ] || { echo "FAIL: hooks/commit-capture.sh 없거나 실행권한 없음"; exit 1; }
 export KC_DIR="$(mktemp -d)"
-printf 'VAULT_PATH=/tmp/v\nAUTHOR=t\n' > "$KC_DIR/config"
-printf '/repo/a\tproj-a\n' > "$KC_DIR/projects.tsv"
+# 훅이 경로를 정규화(pwd -P)해 대조하므로 픽스처도 실존하는 정규 경로여야 한다
+canon_tmp() { cd "$(mktemp -d)" && pwd -P; }
+WORK="$(canon_tmp)"    # 등록 repo
+OTHER="$(canon_tmp)"   # 미등록 repo
+VAULT="$(canon_tmp)"   # vault
+mkdir -p "$VAULT/projects"
+printf 'VAULT_PATH=%s\nAUTHOR=t\n' "$VAULT" > "$KC_DIR/config"
+printf '%s\tproj-a\n' "$WORK" > "$KC_DIR/projects.tsv"
 
-expect_match  "등록 repo의 git commit → 신호"        "$(json /repo/a 'git commit -m x')" "additionalContext"
-expect_match  "등록 repo 신호에 슬러그 포함"          "$(json /repo/a 'git commit -m x')" "proj-a"
-expect_match  "git -C 형태도 감지"                    "$(json /repo/a 'git -C /repo/a commit -m x')" "additionalContext"
-expect_match  "미등록 repo → 등록 제안 신호"          "$(json /other 'git commit -m x')" "미등록"
-expect_silent "commit 아님(git status)"               "$(json /repo/a 'git status')"
-expect_silent "git 없는 commit 단어(echo commit)"     "$(json /repo/a 'echo commit')"
+expect_match  "등록 repo의 git commit → 신호"        "$(json "$WORK" 'git commit -m x')" "additionalContext"
+expect_match  "등록 repo 신호에 슬러그 포함"          "$(json "$WORK" 'git commit -m x')" "proj-a"
+expect_match  "git -C 대상 repo 기준으로 판정"        "$(json "$OTHER" "git -C $WORK commit -m x")" "proj-a"
+expect_match  "미등록 repo → 등록 제안 신호"          "$(json "$OTHER" 'git commit -m x')" "미등록"
+expect_silent "commit 아님(git status)"               "$(json "$WORK" 'git status')"
+expect_silent "git 없는 commit 단어(echo commit)"     "$(json "$WORK" 'echo commit')"
 expect_silent "JSON 아닌 입력"                        "notjson"
+expect_silent "vault 자체 커밋(git -C vault)은 침묵"  "$(json "$WORK" "git -C $VAULT commit -m x")"
+expect_silent "vault 하위 경로 커밋도 침묵"           "$(json "$WORK" "git -C $VAULT/projects commit -m x")"
+expect_silent "cwd가 vault면 침묵"                    "$(json "$VAULT" 'git commit -m x')"
+expect_silent "존재하지 않는 -C 경로면 침묵"          "$(json "$WORK" 'git -C /no/such/dir commit -m x')"
 
 rm "$KC_DIR/config"
-expect_silent "kc 미설정이면 침묵"                    "$(json /repo/a 'git commit -m x')"
+expect_silent "kc 미설정이면 침묵"                    "$(json "$WORK" 'git commit -m x')"
 
 echo "pass=$pass fail=$fail"
 [ "$fail" -eq 0 ]
