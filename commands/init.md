@@ -15,7 +15,14 @@ kc 플러그인의 최초 설정을 진행한다. 사용자 대면 텍스트는 
 
 1. **vault git URL**: `$ARGUMENTS`에 있으면 사용, 없으면 물어본다.
    self-hosted git URL이다 — 이후 모든 조작은 순수 git 명령만 사용한다 (gh 금지)
-2. **clone 위치**: 물어본다 (기본값 제안: `~/team-vault`).
+2. **clone 위치**: 물어본다. 기본값은 **상황에서 유도**하고, 왜 그 경로인지 근거를 함께 보여준다
+   (사용자가 "엉뚱한 데 clone됐다"고 느끼지 않게 하는 것이 목적):
+   - `KC_DIR`가 오버라이드돼 있으면 → `<KC_DIR의 부모>/team-vault`
+     (격리 환경이므로 vault도 같은 격리 디렉토리 안에 둔다)
+   - 아니고 현재 디렉토리가 git repo 안이면 → `<repo 루트의 부모>/team-vault`
+     (작업 중인 repo의 형제. vault는 프로젝트 repo 안에 두지 않는다 — 별도 remote이므로)
+   - 둘 다 아니면 → `~/team-vault`
+   - 제안한 경로는 **절대경로로 펼쳐서** 보여준다
    - 그 경로가 이미 같은 remote의 clone이면 clone 생략하고 그대로 사용
    - 아니면 `git clone <URL> <경로>` 실행
 3. **작성자 이름**: `git config user.name` 값을 기본값으로 제안하고 확인받는다
