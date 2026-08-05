@@ -16,3 +16,16 @@ description: "최신 vault 받아오기 + 새로 올라온 컨텍스트 브리�
 5. **새 컨텍스트 브리핑**: `git -C "$VAULT_PATH" diff --name-status $OLD..HEAD`로 추가·수정된
    노트를 파악하고, 추가된 컨텍스트 노트를 읽어 "누가(작성자) 어느 프로젝트에 무슨 맥락을
    남겼는지"를 한국어로 요약한다. 변경이 없으면 "vault는 이미 최신 상태입니다" 한 줄로 끝
+6. **conventions 갱신 제안**: 플러그인이 업데이트되면서 새 규칙이 생겼는데 vault의 사본이
+   낡아 있을 수 있다. 플러그인 템플릿과 vault 사본을 비교한다 —
+   `$CLAUDE_PLUGIN_ROOT/templates/conventions.md` (환경변수가 없으면 `~/.claude/plugins`
+   아래에서 kc 플러그인 디렉토리를 찾는다) vs `$VAULT_PATH/_meta/conventions.md`.
+   - 같으면 아무 말도 하지 않는다
+   - 다르면 차이를 두 방향으로 나눠서 보여준다:
+     **(가) 플러그인에만 있는 규칙** — 플러그인 업데이트로 추가된 것. 갱신 후보
+     **(나) vault에만 있는 규칙** — 팀이 직접 고친 것. **절대 건드리지 않는다**
+   - `conventions.md`는 vault 쪽 SSOT다. **템플릿으로 통째 덮어쓰지 않는다** —
+     (가)의 항목만 골라 vault 사본에 더하는 안을 제안하고, 항목별로 승인받는다
+   - 승인된 것만 반영 → 커밋 메시지 `kc: conventions 규칙 갱신: <요약>`으로
+     커밋 & push (vault-git-flow.md 절차)
+   - 거절하면 이 세션에서 다시 묻지 않는다
