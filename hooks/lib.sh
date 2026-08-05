@@ -8,6 +8,18 @@ KC_QUEUE="$KC_DIR/queue.tsv"        # <unix시각>TAB<session_id>TAB<cwd>TAB<슬
 
 kc_configured() { [ -f "$KC_CONFIG" ]; }
 
+# $1 = 키 이름. config의 KEY=VALUE에서 값을 출력 (없으면 빈 출력)
+kc_config_get() {
+  [ -f "$KC_CONFIG" ] || return 0
+  awk -F= -v k="$1" '$1 == k { sub(/^[^=]*=/, ""); print; exit }' "$KC_CONFIG"
+}
+
+# $1 = 경로. 심볼릭 링크·상대경로를 푼 절대경로 출력 (존재하지 않으면 빈 출력)
+kc_canonical() {
+  [ -n "${1:-}" ] || return 0
+  (cd "$1" 2>/dev/null && pwd -P) || true
+}
+
 # $1 = 디렉토리. 등록 repo 경로와 같거나 그 하위면 슬러그 출력, 아니면 빈 출력
 kc_project_slug() {
   [ -f "$KC_PROJECTS" ] || return 0
