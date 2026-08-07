@@ -1,0 +1,11 @@
+{
+  "name": "bogonet-tools",
+  "owner": { "name": "bogonet" },
+  "plugins": [
+    {
+      "name": "kc",
+      "source": "./",
+      "description": "팀 지식 중앙화 플러그인 — 캡처·큐레이션·온보딩"
+    }
+  ]
+}
