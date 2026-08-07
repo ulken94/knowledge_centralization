@@ -41,7 +41,9 @@ conventions.md의 "중복 처리" 규칙에 따라, 쓰기 전에 vault를 먼�
   노트를 나누고 서로 링크한다. 한 파일에 몰아 쓰지 않는다
 - 배치 판단·제안: 프로젝트 종속 → `projects/<슬러그>/context/YYYY-MM-DD-<주제>.md`,
   범용 지식 → `topics/<주제>.md` (출처 프로젝트 링크는 남김).
-  어느 프로젝트인지 애매하면 vault의 `projects/` 목록을 보여주고 고르게 한다
+  어느 프로젝트인지 애매하면 프로젝트 목록을 보여주고 고르게 한다 — 프로젝트는
+  `_index.md`가 있는 디렉토리이므로 `find "$VAULT_PATH/projects" -name _index.md`로
+  재귀 탐색하고, 슬러그는 `projects/` 기준 상대경로다 (그룹에 묶이면 `<그룹>/<이름>`)
 - 비밀정보(자격증명·비밀키·내부 URL)는 포함하지 않는다
 - **초안 전문을 보여주고 검토받는다.** 승인(수정 반영 포함) 시 `status: approved`로 바꾸고
   이 플러그인의 `reference/vault-git-flow.md` 절차대로 커밋 & push. 거절 시 아무것도 쓰지 않는다

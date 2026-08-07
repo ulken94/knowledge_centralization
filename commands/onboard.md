@@ -9,8 +9,10 @@ argument-hint: "<프로젝트-슬러그>"
 1. `~/.claude/kc/config` 없으면 "/kc:init 먼저" 안내 후 중단. `VAULT_PATH` 읽기
 2. 먼저 최신화: `git -C "$VAULT_PATH" pull --rebase`
    (충돌 등 문제 시 `reference/vault-git-flow.md` 예외 처리 절차)
-3. `$ARGUMENTS`의 슬러그가 없거나 `projects/`에 존재하지 않으면, `projects/` 하위 목록을
-   각 `_index.md`의 "목적" 첫 줄과 함께 보여주고 고르게 한다
+3. `$ARGUMENTS`의 슬러그가 없거나 그 경로에 `_index.md`가 없으면, 프로젝트 목록을 보여주고
+   고르게 한다. 프로젝트는 **`_index.md`가 있는 디렉토리**이므로 재귀로 찾는다:
+   `find "$VAULT_PATH/projects" -name _index.md` → 각 경로에서 `projects/`를 뗀 것이 슬러그.
+   `system:`이 있으면 그룹별로 묶어서, 각 `_index.md`의 "목적" 첫 줄과 함께 보여준다
 4. 읽기: `projects/<슬러그>/_index.md` → `context/`의 노트(파일명 날짜순) →
    노트들의 `## 연관`이 가리키는 topic 노트들.
    노트가 20개를 넘으면 전부 읽지 말고 `_index.md`의 `## 주요 결정`에 등재된 것과 최근 것을

@@ -8,9 +8,22 @@ kc 플러그인의 모든 명령은 실행 전에 이 파일을 읽고 따른다
 
 - `projects/<슬러그>/_index.md` — 프로젝트 MOC: 목적, 현재 상태, 주요 결정 링크
 - `projects/<슬러그>/context/YYYY-MM-DD-<주제>.md` — 컨텍스트 노트 (사고의 흐름)
+- 같은 시스템·고객의 프로젝트가 여럿이면 **그룹 디렉토리로 한 단계 묶는다** —
+  `projects/<그룹>/<슬러그>/`. 그룹 디렉토리 자체에는 `_index.md`를 두지 않는다
 - `topics/<주제>.md` — 프로젝트 간 공통 주제 허브 (+ 정제된 지식)
 - `inbox/` — 자유 형식 투입 (비개발자·임시 메모). 큐레이션이 정식 위치로 옮긴다
 - `_meta/` — 이 파일과 노트 템플릿
+
+## 프로젝트 식별과 그룹
+
+- **프로젝트는 `_index.md`가 있는 디렉토리다.** 깊이는 규칙에 박지 않는다 —
+  `projects/` 아래를 재귀로 훑어 `_index.md`를 찾으면 그것이 프로젝트다
+- **슬러그는 `projects/` 기준 상대경로**다. 묶이면 `seah-2nd-forge/error-case`,
+  안 묶이면 `kc-plugin`. 위키링크도 이 경로를 쓴다: `[[<슬러그>/_index|<표시명>]]`
+- 묶음은 **디렉토리와 frontmatter 키 두 곳**에 나타낸다. 디렉토리는 GitHub·GitLab
+  웹에서 탐색하는 수단이고(거기엔 그래프도 질의도 없다), 키는 Obsidian에서
+  검색·필터하는 수단이다. 둘 중 하나만으로는 한쪽 화면에서 묶이지 않는다
+- 그룹이 없는 단독 프로젝트는 키를 비워 둔다 — 억지로 묶지 않는다
 
 ## 배치 기준: "이 지식이 누구 것인가"
 
@@ -20,8 +33,14 @@ kc 플러그인의 모든 명령은 실행 전에 이 파일을 읽고 따른다
 ## 컨텍스트 노트 스키마
 
 frontmatter(기계용 — 플러그인이 파싱):
-`project`, `date`, `author`, `type`(decision | exploration | work-log | meeting),
-`topics`(배열), `status`(draft | approved)
+`project`, `system`(그룹 — 없으면 생략), `date`, `author`,
+`type`(decision | exploration | work-log | meeting), `topics`(배열),
+`status`(draft | approved)
+
+`system:`은 프로젝트의 `_index.md`와 그 프로젝트의 모든 컨텍스트 노트에 같은 값으로
+넣는다. 노트에도 넣는 이유는 Obsidian에서 `system:<값>`으로 **노트를 직접 필터**하기
+위해서다 — `_index.md`에만 있으면 인덱스만 걸리고 정작 내용은 안 걸린다.
+값은 디렉토리의 그룹명과 일치해야 한다 (큐레이션이 검사)
 
 본문 섹션: `# 제목` / `## 배경` / `## 사고의 흐름` / `## 결론` / `## 다음 단계 · 미해결` / `## 연관`
 
