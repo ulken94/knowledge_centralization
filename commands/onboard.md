@@ -13,7 +13,7 @@ argument-hint: "<프로젝트-슬러그>"
    고르게 한다. 프로젝트는 **`_index.md`가 있는 디렉토리**이므로 재귀로 찾는다:
    `find "$VAULT_PATH/projects" -name _index.md` → 각 경로에서 `projects/`를 뗀 것이 슬러그.
    `system:`이 있으면 그룹별로 묶어서, 각 `_index.md`의 "목적" 첫 줄과 함께 보여준다
-4. 읽기: `projects/<슬러그>/_index.md` → `context/`의 노트(파일명 날짜순) →
+4. 읽기: `projects/<슬러그>/_index.md` → `context/`의 노트(frontmatter `created` 순) →
    노트들의 `## 연관`이 가리키는 topic 노트들.
    노트가 20개를 넘으면 전부 읽지 말고 `_index.md`의 `## 주요 결정`에 등재된 것과 최근 것을
    먼저 읽은 뒤, 나머지는 제목·frontmatter만 훑는다 (분할 규칙 때문에 노트 수는 계속 늘어난다)
