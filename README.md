@@ -46,7 +46,7 @@ soft landing 하도록 돕습니다.
 
 ```
 /plugin marketplace add ulken94/knowledge_centralization
-/plugin install kc@bogonet-tools
+/plugin install kc@ulken94-tools
 ```
 
 설치 후 머신당 **최초 1회**:
