@@ -1,5 +1,5 @@
 ---
-type: project-index
+type: project-index   # 그룹 노트는 group-index
 project: {{슬러그}}
 system: {{그룹 — 묶이지 않으면 이 줄 삭제}}
 created: {{YYYY-MM-DD}}

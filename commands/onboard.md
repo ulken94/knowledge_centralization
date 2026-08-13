@@ -9,13 +9,14 @@ argument-hint: "<프로젝트-슬러그>"
 1. `~/.claude/kc/config` 없으면 "/kc:init 먼저" 안내 후 중단. `VAULT_PATH` 읽기
 2. 먼저 최신화: `git -C "$VAULT_PATH" pull --rebase`
    (충돌 등 문제 시 `reference/vault-git-flow.md` 예외 처리 절차)
-3. `$ARGUMENTS`의 슬러그가 없거나 그 경로에 `_index.md`가 없으면, 프로젝트 목록을 보여주고
-   고르게 한다. 프로젝트는 **`_index.md`가 있는 디렉토리**이므로 재귀로 찾는다:
-   `find "$VAULT_PATH/projects" -name _index.md` → 각 경로에서 `projects/`를 뗀 것이 슬러그.
-   `system:`이 있으면 그룹별로 묶어서, 각 `_index.md`의 "목적" 첫 줄과 함께 보여준다
-4. 읽기: `projects/<슬러그>/_index.md` → `context/`의 노트(frontmatter `created` 순) →
+3. `$ARGUMENTS`의 슬러그가 없거나 그 경로에 프로젝트 노트가 없으면, 목록을 보여주고
+   고르게 한다. 프로젝트는 **frontmatter `type: project-index`인 노트가 있는 디렉토리**이므로
+   재귀로 찾는다: `grep -rl '^type: project-index' "$VAULT_PATH/projects"` → 그 파일의
+   디렉토리에서 `projects/`를 뗀 것이 슬러그. `system:`이 있으면 그룹별로 묶어서,
+   각 프로젝트 노트의 "목적" 첫 줄과 함께 보여준다
+4. 읽기: 프로젝트 노트(`projects/<슬러그>/<디렉토리명>.md`) → 그룹 노트가 있으면 그것 → `context/`의 노트(frontmatter `created` 순) →
    노트들의 `## 연관`이 가리키는 topic 노트들.
-   노트가 20개를 넘으면 전부 읽지 말고 `_index.md`의 `## 주요 결정`에 등재된 것과 최근 것을
+   노트가 20개를 넘으면 전부 읽지 말고 프로젝트 노트의 `## 주요 결정`에 등재된 것과 최근 것을
    먼저 읽은 뒤, 나머지는 제목·frontmatter만 훑는다 (분할 규칙 때문에 노트 수는 계속 늘어난다)
 5. **브리핑** (한국어, 아래 순서):
    ① 프로젝트 배경 — 왜 시작됐고 누구를 위한 것인지

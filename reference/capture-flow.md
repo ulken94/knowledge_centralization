@@ -14,13 +14,14 @@ commit-capture 훅이 "[kc] git commit 감지" 신호를 줬을 때 따르는 �
 
 - repo 디렉토리명 기반 kebab-case 슬러그를 제안하며 "이 repo를 vault 프로젝트로 등록할까요?" 확인
 - vault에 같은 시스템·고객의 프로젝트가 이미 있으면 **그룹으로 묶는 안을 함께 제안**한다
-  (`projects/<그룹>/<슬러그>/`, `system:` 키 동일값). 기존 프로젝트도 그 그룹으로 옮겨야
+  (`projects/<그룹>/<슬러그>/`, `system:` 키 동일값, 그룹 노트 `<그룹>.md` 생성·갱신). 기존 프로젝트도 그 그룹으로 옮겨야
   하면 그 이동까지 한 제안으로 묶는다 — conventions.md "프로젝트 식별과 그룹" 참조
 - 승인 시:
   - repo 절대경로는 심볼릭 링크를 푼 정규 경로(`cd <repo 루트> && pwd -P` 결과)로 쓴다 —
     훅이 정규화한 경로로 대조하므로 형태가 같아야 매칭된다:
     `printf '%s\t%s\n' "<정규 절대경로>" "<슬러그>" >> ~/.claude/kc/projects.tsv`
-  - `$VAULT_PATH/_meta/templates/project-index.md`를 기반으로 `projects/<슬러그>/_index.md` 생성
+  - `$VAULT_PATH/_meta/templates/project-index.md`를 기반으로
+    `projects/<슬러그>/<디렉토리명>.md` 생성 (파일명은 디렉토리명과 같게)
     (목적·현재 상태는 사용자에게 한두 문장 묻거나 이 세션의 맥락으로 채운다),
     `projects/<슬러그>/context/` 디렉토리 생성, vault-git-flow.md 절차로 커밋·push
 - 거절 시 종료. 이 세션에서 다시 제안하지 않는다

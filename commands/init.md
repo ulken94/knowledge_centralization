@@ -32,7 +32,7 @@ kc 플러그인의 최초 설정을 진행한다. 사용자 대면 텍스트는 
    - 디렉토리 생성: `projects/`, `topics/`, `inbox/`, `_meta/templates/`
      (빈 디렉토리 유지용으로 `projects/.gitkeep`, `topics/.gitkeep` 추가)
    - 복사: `templates/conventions.md` → `_meta/conventions.md`,
-     `templates/project-index.md`·`context-note.md`·`topic.md` → `_meta/templates/`,
+     `templates/project-index.md`·`group-index.md`·`context-note.md`·`topic.md` → `_meta/templates/`,
      `templates/inbox-README.md` → `inbox/README.md`
    - 부트스트랩 내용을 사용자에게 보여주고 확인받은 뒤
      커밋 메시지 `kc: vault 스켈레톤 초기화`로 커밋 & push
