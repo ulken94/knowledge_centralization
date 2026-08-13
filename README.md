@@ -196,7 +196,8 @@ for t in tests/hooks/*.sh tests/test-curate-*.sh; do bash "$t"; done
 | `tests/test-curate-group.sh` | 그룹 묶음 — 감지·이동·키 부여·단독 프로젝트 제외 |
 
 - E2E 체크리스트: `tests/scenarios.md` (`tests/make-sample-vault.sh`로 샘플 vault 생성)
-- 설계 문서: `docs/superpowers/specs/2026-07-22-team-knowledge-plugin-design.md`
+- 설계 맥락은 vault의 `kc-plugin` 프로젝트에 있습니다 — `/kc:onboard kc-plugin`으로 읽으세요
+  (이 플러그인의 요지가 "설계 근거를 어디에 남길 것인가"이고, 그 답이 repo의 docs가 아니라 vault입니다)
 - 테스트 픽스처는 `tests/tmp/` 아래에 매번 새로 만들고 `.gitignore` 대상입니다
 
 ### 격리 실행
