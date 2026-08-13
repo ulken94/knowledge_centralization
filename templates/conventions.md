@@ -25,9 +25,9 @@ kc 플러그인의 모든 명령은 실행 전에 이 파일을 읽고 따른다
 - **프로젝트는 frontmatter `type: project-index`인 노트가 있는 디렉토리다.**
   깊이는 규칙에 박지 않는다 — `projects/` 아래를 재귀로 훑어 그 노트를 찾는다.
   그룹 디렉토리의 노트는 `type: group-index`라 구분된다
-- **슬러그는 `projects/` 기준 상대경로**다. 묶이면 `seah-2nd-forge/error-case`,
-  안 묶이면 `kc-plugin`. 파일명이 디렉토리명과 같으므로 위키링크는 짧게 쓴다:
-  `[[error-case]]` (같은 이름이 여러 곳에 있으면 경로를 붙인다)
+- **슬러그는 `projects/` 기준 상대경로**다. 묶이면 `kc/plugin`, 안 묶이면 `kc-plugin`.
+  파일명이 디렉토리명과 같으므로 위키링크는 짧게 쓴다: `[[plugin]]`
+  (같은 이름이 여러 곳에 있으면 경로를 붙인다)
 - 묶음은 **세 곳**에 나타낸다. 화면마다 보는 수단이 다르기 때문이다:
   - **디렉토리** — GitHub·GitLab 웹의 탐색 수단 (거기엔 그래프도 질의도 없다)
   - **frontmatter `system:` 키** — Obsidian의 검색·필터 수단

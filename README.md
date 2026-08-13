@@ -84,6 +84,8 @@ vault를 clone하고 `~/.claude/kc/config`를 만듭니다. 빈 vault면 스켈�
 
 ## vault 구조
 
+아래는 이 플러그인 자신을 기록한 실제 구조입니다.
+
 ```
 team-vault/
 ├── projects/
@@ -91,22 +93,29 @@ team-vault/
 │   │   ├── kc-plugin.md                  type: project-index
 │   │   └── context/
 │   │       ├── 플러그인-설계-결정.md
-│   │       └── dogfood-실사용-검증.md
-│   └── seah-2nd-forge/                   같은 시스템의 프로젝트 묶음
-│       ├── seah-2nd-forge.md             type: group-index
-│       ├── error-case/
-│       │   ├── error-case.md
+│   │       ├── dogfood-실사용-검증.md
+│   │       └── 프로젝트-그룹-도입.md
+│   └── kc/                               여러 프로젝트로 갈라지면 그룹으로 묶는다
+│       ├── kc.md                         type: group-index
+│       ├── plugin/                         1단계 — Claude Code 플러그인
+│       │   ├── plugin.md
 │       │   └── context/…
-│       └── postech-refactor/
-│           ├── postech-refactor.md
+│       ├── mcp-server/                     2단계 — 비개발자가 Claude 앱에서 기여
+│       │   ├── mcp-server.md
+│       │   └── context/…
+│       └── ci-curation/                    3단계 — CI로 큐레이션 자동화
+│           ├── ci-curation.md
 │           └── context/…
 ├── topics/                               프로젝트를 가로지르는 주제 허브
-│   └── 소재-추적.md
+│   └── 컨텍스트-캡처.md
 ├── inbox/                                자유 형식 투입 (비개발자·임시 메모)
 └── _meta/                                규칙(SSOT)과 노트 템플릿
     ├── conventions.md
     └── templates/
 ```
+
+위쪽 `kc-plugin/`이 지금 상태이고, 아래 `kc/`는 설계 문서의 단계별 확장(플러그인 →
+MCP 서버 → CI 큐레이션)이 실제 프로젝트로 갈라졌을 때의 모습입니다.
 
 **프로젝트는 frontmatter `type: project-index`인 노트가 있는 디렉토리입니다.**
 깊이에 의존하지 않으므로 그룹으로 묶여도 그대로 인식됩니다.
@@ -128,13 +137,13 @@ team-vault/
 
 ```yaml
 ---
-project: seah-2nd-forge/error-case   # projects/ 기준 상대경로
-system: seah-2nd-forge               # 그룹 (없으면 생략)
-created: 2026-07-31
-updated: 2026-07-31
-author: Haneol Kim
+project: kc-plugin                   # projects/ 기준 상대경로 (그룹에 묶이면 kc/plugin)
+system:                              # 그룹 — 없으면 이 줄 생략
+created: 2026-08-13
+updated: 2026-08-13
+author: ulken94
 type: decision                       # decision | exploration | work-log | meeting
-topics: [소재-추적, 센서-데이터-신뢰성]
+topics: [컨텍스트-캡처, vault-구조]
 status: approved                     # draft | approved
 ---
 ```
