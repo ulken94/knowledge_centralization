@@ -36,10 +36,10 @@ conventions.md의 "중복 처리" 규칙에 따라, 쓰기 전에 vault를 먼�
 ## 노트 작성·반영
 
 - conventions.md 스키마대로 초안 작성: frontmatter(`author`는 config의 AUTHOR,
-  `date`는 오늘, `status: draft`)와 `## 연관` 위키링크를 쌍으로
+  `created`·`updated`는 오늘, `status: draft`)와 `## 연관` 위키링크를 쌍으로
 - conventions.md의 "노트 분할 기준"을 따른다 — 성격이 다른 항목이 여러 건이면 항목별로
   노트를 나누고 서로 링크한다. 한 파일에 몰아 쓰지 않는다
-- 배치 판단·제안: 프로젝트 종속 → `projects/<슬러그>/context/YYYY-MM-DD-<주제>.md`,
+- 배치 판단·제안: 프로젝트 종속 → `projects/<슬러그>/context/<주제>.md`,
   범용 지식 → `topics/<주제>.md` (출처 프로젝트 링크는 남김).
   어느 프로젝트인지 애매하면 프로젝트 목록을 보여주고 고르게 한다 — 프로젝트는
   `_index.md`가 있는 디렉토리이므로 `find "$VAULT_PATH/projects" -name _index.md`로

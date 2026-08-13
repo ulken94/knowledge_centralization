@@ -1,7 +1,8 @@
 ---
 project: {{슬러그}}
 system: {{그룹 — 묶이지 않으면 이 줄 삭제}}
-date: {{YYYY-MM-DD}}
+created: {{YYYY-MM-DD}}
+updated: {{YYYY-MM-DD}}
 author: {{작성자}}
 type: work-log
 topics: []
