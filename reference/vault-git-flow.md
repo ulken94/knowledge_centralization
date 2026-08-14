@@ -15,6 +15,12 @@ vault에 노트를 쓰는 모든 동작은 이 절차를 따른다. 사용자가
 
 ## 예외 처리
 
+- **이미 워킹트리에 변경이 있는 경우**: 위 순서는 pull 후 쓰기를 전제하지만, 실제로는
+  노트를 먼저 쓰고 절차를 타는 일이 잦다. 그 상태로 2단계를 실행하면
+  `cannot pull with rebase: You have unstaged changes`로 멈춘다.
+  `git -C "$VAULT_PATH" fetch origin` 후 `git -C "$VAULT_PATH" log --oneline HEAD..@{u}`로
+  원격에 새 커밋이 있는지 본다 — 없으면 2단계를 건너뛰고 4단계로 간다.
+  있으면 `git -C "$VAULT_PATH" stash` → pull --rebase → `stash pop` 순으로 처리한다
 - **pull --rebase 충돌**: 충돌 파일을 열어 양쪽 의도를 모두 보존하는 병합을 시도한다.
   컨텍스트 노트는 append 위주라 대부분 양쪽 내용을 다 살리면 된다.
   판단이 애매하면 양쪽 버전을 사용자에게 보여주고 물어본다 — **조용히 한쪽을 버리지 않는다**.
