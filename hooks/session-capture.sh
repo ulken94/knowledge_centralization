@@ -23,6 +23,11 @@ TRANSCRIPT=$(printf '%s' "$line" | cut -f3)
 kc_configured || exit 0
 [ -n "$SESSION_ID" ] || exit 0
 SLUG="$(kc_project_slug "$CWD")"
+# 워크트리 세션도 주 repo와 같은 프로젝트로 본다 (commit-capture 와 같은 규칙)
+if [ -z "$SLUG" ]; then
+  ROOT="$(kc_repo_root "$CWD")"
+  if [ -n "${ROOT:-}" ] && [ "$ROOT" != "$CWD" ]; then SLUG="$(kc_project_slug "$ROOT")"; fi
+fi
 [ -n "$SLUG" ] || exit 0
 kc_in_queue "$SESSION_ID" && exit 0
 

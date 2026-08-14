@@ -37,6 +37,20 @@ expect_silent "vault 하위 경로 커밋도 침묵"           "$(json "$WORK" "
 expect_silent "cwd가 vault면 침묵"                    "$(json "$VAULT" 'git commit -m x')"
 expect_silent "존재하지 않는 -C 경로면 침묵"          "$(json "$WORK" 'git -C /no/such/dir commit -m x')"
 
+# git worktree: 경로가 달라도 주 워크트리 기준으로 같은 프로젝트여야 한다
+git -C "$WORK" init -q 2>/dev/null
+git -C "$WORK" -c user.email=t@t -c user.name=t commit -q --allow-empty -m init 2>/dev/null
+git -C "$WORK" worktree add -q -b wt "$WORK-wt" 2>/dev/null
+WT="$(cd "$WORK-wt" && pwd -P)"
+expect_match  "등록 repo의 워크트리 → 같은 슬러그"    "$(json "$WT" 'git commit -m x')" "proj-a"
+expect_match  "워크트리에서 git -C 주 repo"           "$(json "$WT" "git -C $WORK commit -m x")" "proj-a"
+
+git -C "$OTHER" init -q 2>/dev/null
+git -C "$OTHER" -c user.email=t@t -c user.name=t commit -q --allow-empty -m init 2>/dev/null
+git -C "$OTHER" worktree add -q -b wt "$OTHER-wt" 2>/dev/null
+OWT="$(cd "$OTHER-wt" && pwd -P)"
+expect_match  "미등록 워크트리 → 주 워크트리로 등록 제안" "$(json "$OWT" 'git commit -m x')" "$OTHER)"
+
 rm "$KC_DIR/config"
 expect_silent "kc 미설정이면 침묵"                    "$(json "$WORK" 'git commit -m x')"
 

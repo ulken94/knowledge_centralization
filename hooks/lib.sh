@@ -20,6 +20,23 @@ kc_canonical() {
   (cd "$1" 2>/dev/null && pwd -P) || true
 }
 
+# $1 = 디렉토리. 그 디렉토리가 속한 repo의 "주 워크트리" 경로를 출력.
+# git worktree 로 판 디렉토리는 경로가 달라 등록 매핑에 걸리지 않는다 —
+# 주 워크트리로 환산해 같은 프로젝트로 인식시킨다. repo가 아니거나 bare면 빈 출력.
+kc_repo_root() {
+  [ -n "${1:-}" ] || return 0
+  (
+    cd "$1" 2>/dev/null || exit 0
+    d=$(git rev-parse --git-common-dir 2>/dev/null) || exit 0
+    d="${d%/}"
+    [ -n "$d" ] || exit 0
+    case "$d" in /*) ;; *) d="$PWD/$d" ;; esac
+    case "$d" in
+      */.git) cd "${d%/.git}" 2>/dev/null && pwd -P ;;
+    esac
+  )
+}
+
 # $1 = 디렉토리. 등록 repo 경로와 같거나 그 하위면 슬러그 출력, 아니면 빈 출력
 kc_project_slug() {
   [ -f "$KC_PROJECTS" ] || return 0

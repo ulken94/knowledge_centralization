@@ -17,9 +17,11 @@ commit-capture 훅이 "[kc] git commit 감지" 신호를 줬을 때 따르는 �
   (`projects/<그룹>/<슬러그>/`, `system:` 키 동일값, 그룹 노트 `<그룹>.md` 생성·갱신). 기존 프로젝트도 그 그룹으로 옮겨야
   하면 그 이동까지 한 제안으로 묶는다 — conventions.md "프로젝트 식별과 그룹" 참조
 - 승인 시:
-  - repo 절대경로는 심볼릭 링크를 푼 정규 경로(`cd <repo 루트> && pwd -P` 결과)로 쓴다 —
-    훅이 정규화한 경로로 대조하므로 형태가 같아야 매칭된다:
-    `printf '%s\t%s\n' "<정규 절대경로>" "<슬러그>" >> ~/.claude/kc/projects.tsv`
+  - 등록 경로는 **주 워크트리 루트**의 정규 경로를 쓴다. `git worktree`로 판 디렉토리에서
+    등록하면 워크트리를 지운 뒤 죽은 매핑이 남고, 워크트리마다 중복 등록된다:
+    `cd "$(git rev-parse --path-format=absolute --git-common-dir)/.." && pwd -P`
+    (훅도 같은 규칙으로 환산해 대조하므로 형태가 같아야 매칭된다)
+    `printf '%s\t%s\n' "<주 워크트리 정규 절대경로>" "<슬러그>" >> ~/.claude/kc/projects.tsv`
   - `$VAULT_PATH/_meta/templates/project-index.md`를 기반으로
     `projects/<슬러그>/<디렉토리명>.md` 생성 (파일명은 디렉토리명과 같게)
     (목적·현재 상태는 사용자에게 한두 문장 묻거나 이 세션의 맥락으로 채운다),

@@ -22,9 +22,20 @@ t "같은 session_id 중복 등록 안 함" "1" "$(wc -l < "$Q" | tr -d ' ')"
 printf '%s' "$(json s-2 /elsewhere /tmp/t2.jsonl)" | "$SCRIPT"
 t "미등록 디렉토리 세션은 무시" "1" "$(wc -l < "$Q" | tr -d ' ')"
 
+# 워크트리 세션도 주 워크트리 기준으로 등록 프로젝트여야 한다
+REPO="$(cd "$(mktemp -d)" && pwd -P)"
+git -C "$REPO" init -q 2>/dev/null
+git -C "$REPO" -c user.email=t@t -c user.name=t commit -q --allow-empty -m init 2>/dev/null
+git -C "$REPO" worktree add -q -b wt "$REPO-wt" 2>/dev/null
+WT="$(cd "$REPO-wt" && pwd -P)"
+printf '%s\tproj-b\n' "$REPO" >> "$KC_DIR/projects.tsv"
+printf '%s' "$(json s-4 "$WT" /tmp/t4.jsonl)" | "$SCRIPT"
+t "워크트리 세션 → 대기열 등록" "2" "$(wc -l < "$Q" | tr -d ' ')"
+t "워크트리 세션의 슬러그는 주 repo 것" "proj-b" "$(awk -F'\t' 'NR==2{print $4}' "$Q")"
+
 rm "$KC_DIR/config"
 printf '%s' "$(json s-3 /repo/a /tmp/t3.jsonl)" | "$SCRIPT"
-t "kc 미설정이면 무시" "1" "$(wc -l < "$Q" | tr -d ' ')"
+t "kc 미설정이면 무시" "2" "$(wc -l < "$Q" | tr -d ' ')"
 
 echo "pass=$pass fail=$fail"
 [ "$fail" -eq 0 ]

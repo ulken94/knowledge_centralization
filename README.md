@@ -183,7 +183,7 @@ Obsidian으로 vault를 열고 `inbox/`에 자유 형식 메모를 남기면 됩
 ## 개발
 
 ```bash
-# 전체 테스트 (62건)
+# 전체 테스트 (71건)
 for t in tests/hooks/*.sh tests/test-curate-*.sh; do bash "$t"; done
 ```
 

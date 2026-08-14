@@ -42,10 +42,17 @@ if [ -n "${VAULT:-}" ] && { [ "$TARGET" = "$VAULT" ] || case "$TARGET" in "$VAUL
 fi
 
 SLUG="$(kc_project_slug "$TARGET")"
+# git worktree 에서 커밋하면 경로가 달라 매핑에 걸리지 않는다 — 주 워크트리로 환산해 재조회.
+# 등록 제안도 워크트리가 아닌 주 워크트리 경로로 해야 워크트리를 지운 뒤 죽은 매핑이 남지 않는다.
+ROOT="$(kc_repo_root "$TARGET")"
+if [ -z "$SLUG" ] && [ -n "${ROOT:-}" ] && [ "$ROOT" != "$TARGET" ]; then
+  SLUG="$(kc_project_slug "$ROOT")"
+fi
+
 if [ -n "$SLUG" ]; then
   CTX="[kc] git commit 감지 — 작업이 일단락된 것으로 보임 (프로젝트: $SLUG). $PLUGIN_ROOT/reference/capture-flow.md 를 읽고, 기록 가치가 있으면 그 절차대로 사고의 흐름 기록을 제안하라. 사소한 커밋(오타·포맷 등)이면 아무것도 하지 말고 언급도 하지 말 것."
 else
-  CTX="[kc] git commit 감지 — 이 repo($TARGET)는 kc에 미등록. $PLUGIN_ROOT/reference/capture-flow.md 의 '프로젝트 등록' 절차대로 등록을 제안하고, 등록되면 이어서 기록을 제안하라. 이 세션에서 이미 등록을 거절했다면 다시 제안하지 말 것."
+  CTX="[kc] git commit 감지 — 이 repo(${ROOT:-$TARGET})는 kc에 미등록. $PLUGIN_ROOT/reference/capture-flow.md 의 '프로젝트 등록' 절차대로 등록을 제안하고, 등록되면 이어서 기록을 제안하라. 이 세션에서 이미 등록을 거절했다면 다시 제안하지 말 것."
 fi
 
 CTX="$CTX" python3 -c '

@@ -33,6 +33,17 @@ t "슬러그: 하위 디렉토리" "my-proj" "$(kc_project_slug /Users/a/repo/sr
 t "슬러그: 접두어 오탐 없음" "" "$(kc_project_slug /Users/a/repository)"
 t "슬러그: 미등록" "" "$(kc_project_slug /Users/b/other)"
 
+REPO="$(cd "$(mktemp -d)" && pwd -P)"
+git -C "$REPO" init -q 2>/dev/null
+git -C "$REPO" -c user.email=t@t -c user.name=t commit -q --allow-empty -m init 2>/dev/null
+WT="$REPO-wt"
+git -C "$REPO" worktree add -q -b wt-branch "$WT" 2>/dev/null
+WT="$(cd "$WT" && pwd -P)"
+t "repo_root: 주 워크트리 자신" "$REPO" "$(kc_repo_root "$REPO")"
+t "repo_root: 워크트리 → 주 워크트리" "$REPO" "$(kc_repo_root "$WT")"
+t "repo_root: repo 아닌 경로 → 빈 값" "" "$(kc_repo_root "$KC_DIR")"
+t "repo_root: 비실존 경로 → 빈 값" "" "$(kc_repo_root /no/such/path)"
+
 printf '1\ts-abc\t/x\tp\t-\n' > "$KC_DIR/queue.tsv"
 if kc_in_queue s-abc; then t "대기열: 존재" "yes" "yes"; else t "대기열: 존재" "yes" "no"; fi
 if kc_in_queue s-zzz; then t "대기열: 부재" "no" "yes"; else t "대기열: 부재" "no" "no"; fi
