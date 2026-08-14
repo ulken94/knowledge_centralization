@@ -4,6 +4,7 @@ description: "대기열에 쌓인 세션들을 검토해 사고의 흐름을 vau
 
 대기열 검토. 사용자 대면 텍스트는 한국어.
 환경변수 `KC_DIR`가 설정돼 있으면 아래의 `~/.claude/kc`를 그 경로로 대체한다 (훅과 동일 규칙).
+승인·선택을 물을 때는 이 플러그인의 `reference/asking.md`를 따른다 — 평문으로 묻지 말고 선택지로 고르게 한다.
 
 1. `~/.claude/kc/config` 없으면 "/kc:init 먼저" 안내 후 중단. `VAULT_PATH`·`AUTHOR`를 읽고
    `$VAULT_PATH/_meta/conventions.md`를 읽는다

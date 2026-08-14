@@ -4,6 +4,7 @@ description: "최신 vault 받아오기 + 새로 올라온 컨텍스트 브리�
 
 사용자 대면 텍스트는 한국어.
 환경변수 `KC_DIR`가 설정돼 있으면 아래의 `~/.claude/kc`를 그 경로로 대체한다 (훅과 동일 규칙).
+승인·선택을 물을 때는 이 플러그인의 `reference/asking.md`를 따른다 — 평문으로 묻지 말고 선택지로 고르게 한다.
 
 1. `~/.claude/kc/config`가 없으면 "/kc:init을 먼저 실행하세요" 안내 후 중단.
    `VAULT_PATH`를 읽는다

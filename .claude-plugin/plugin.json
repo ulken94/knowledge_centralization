@@ -1,6 +1,6 @@
 {
   "name": "kc",
   "description": "팀 지식 중앙화 — 작업의 사고의 흐름을 git 기반 Obsidian vault에 캡처·관리·제공",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "author": { "name": "ulken94" }
 }

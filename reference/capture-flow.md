@@ -3,6 +3,7 @@
 commit-capture 훅이 "[kc] git commit 감지" 신호를 줬을 때 따르는 절차.
 `$VAULT_PATH`, 작성자 이름은 `~/.claude/kc/config`에서 읽는다.
 환경변수 `KC_DIR`가 설정돼 있으면 이 문서의 `~/.claude/kc`를 그 경로로 대체한다 (훅과 동일 규칙).
+승인·선택을 물을 때는 이 플러그인의 `reference/asking.md`를 따른다 — 평문으로 묻지 말고 선택지로 고르게 한다.
 
 ## 0. 기록 가치 판단
 
